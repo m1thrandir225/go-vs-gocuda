@@ -2,6 +2,7 @@ package native
 
 import (
 	"fmt"
+	"log"
 	"runtime"
 	"sync"
 	"time"
@@ -23,9 +24,9 @@ func Multiply(a, b [][]float64) ([][]float64, error) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < len(a); i++ {
-		for j := 0; j < len(b[0]); j++ {
-			for k := 0; k < len(b); k++ {
+	for i := range a {
+		for j := range b[0] {
+			for k := range b {
 				result[i][j] += a[i][k] * b[k][j]
 			}
 		}
@@ -52,13 +53,13 @@ func MultiplyParallel(a, b [][]float64) ([][]float64, error) {
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < len(a); i++ {
+	for i := range a {
 		wg.Add(1)
 		go func(rowIdx int) {
 			defer wg.Done()
-			for j := 0; j < len(b[0]); j++ {
+			for j := range b[0] {
 				sum := 0.0
-				for k := 0; k < len(b); k++ {
+				for k := range b {
 					sum += a[rowIdx][k] * b[k][j]
 				}
 				result[rowIdx][j] = sum
@@ -87,18 +88,20 @@ func MultiplyParallelWorkerPool(a, b [][]float64) ([][]float64, error) {
 
 	numWorkers := runtime.NumCPU()
 
+	log.Printf("Number of CPU's available: %d\n", numWorkers)
+
 	jobs := make(chan int, len(a))
 
 	var wg sync.WaitGroup
 
-	for w := 0; w < numWorkers; w++ {
+	for range numWorkers {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			for rowIdx := range jobs {
-				for j := 0; j < len(b[0]); j++ {
+				for j := range b[0] {
 					sum := 0.0
-					for k := 0; k < len(b); k++ {
+					for k := range b {
 						sum += a[rowIdx][k] * b[k][j]
 					}
 					result[rowIdx][j] = sum
@@ -107,9 +110,10 @@ func MultiplyParallelWorkerPool(a, b [][]float64) ([][]float64, error) {
 		}()
 	}
 
-	for i := 0; i < len(a); i++ {
+	for i := range a {
 		jobs <- i
 	}
+
 	close(jobs)
 
 	wg.Wait()

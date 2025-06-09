@@ -4,23 +4,13 @@ import (
 	"fmt"
 
 	"github.com/m1thrandir225/go-vs-gocuda/internals/native"
+	"github.com/m1thrandir225/go-vs-gocuda/util"
 )
 
-func createMatrix(size int) [][]float64 {
-	matrix := make([][]float64, size)
-	for i := 0; i < size; i++ {
-		matrix[i] = make([]float64, size)
-		for j := 0; j < size; j++ {
-			matrix[i][j] = float64(i + j) // Just some dummy data
-		}
-	}
-	return matrix
-}
-
 func main() {
-	matrixSize := 2048
-	matrixA := createMatrix(matrixSize)
-	matrixB := createMatrix(matrixSize)
+	matrixSize := 512
+	matrixA := util.CreateMatrix(matrixSize)
+	matrixB := util.CreateMatrix(matrixSize)
 
 	_, err := native.Multiply(matrixA, matrixB)
 	if err != nil {

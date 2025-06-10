@@ -20,51 +20,6 @@ __global__ void matrix_multiplication(float *a, float *b, float *c, int width)
     }
 }
 
-// __global__ void matrix_multiplication_tiled(float* a, float* b, float* c, int width, int tileDim) {
-//     __shared__ float sA[MAX_TILE_DIM][MAX_TILE_DIM];
-//     __shared__ float sB[MAX_TILE_DIM][MAX_TILE_DIM];
-
-//     int tx = threadIdx.x;
-//     int ty = threadIdx.y;
-//     int row = blockIdx.y * tileDim + ty;
-//     int col = blockIdx.x * tileDim + tx;
-
-
-//     float sum = 0.0f;
-//     int numTiles = (width + tileDim - 1) / tileDim;
-
-//     for (int tile = 0; tile < numTiles; ++tile) {
-//         int a_load_row = row;
-//         int a_load_col = tile * tileDim + tx;
-//         if ((a_load_row < width & a_load_col < width & ty < tileDim & tx) < tileDim) {
-//             sA[ty][tx] = a[a_load_row * width + a_load_col];
-//         }
-//         else {
-//             sA[ty][tx] = 0.0f;
-//         }
-//         int b_load_row = tile * tileDim + ty;
-//         int b_load_col = col;
-//         if ((b_load_row < width & b_load_col < width & ty < tileDim & tx) < tileDim) {
-//             sB[ty][tx] = b[b_load_row * width + b_load_col];
-//         }
-//         else {
-//             sB[ty][tx] = 0.0f;
-//         }
-//         __syncthreads();
-
-//         if (ty < tileDim && tx < tileDim) {
-//             for (int k = 0; k < tileDim; ++k) {
-//                 if ((tile * tileDim + k) < width) {
-//                     sum += sA[ty][k] * sB[k][tx];
-//                 }
-//             }
-//         }
-//         __syncthreads();
-//     }
-//     if (row < width && col < width) {
-//         c[row * width + col] = sum;
-//     }
-// }
 
 extern "C" {
     __declspec(dllexport) void matrix_multiplication_wrapper(float* a, float* b, float* c, int size) {

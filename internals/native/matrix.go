@@ -8,7 +8,8 @@ import (
 
 type Matrix [][]float64
 
-func NewMatrix(size int) *Matrix {
+// Creates a random new matrix
+func NewRandomMatrix(size int) *Matrix {
 	created := util.CreateMatrix(size)
 
 	matrix := Matrix(created)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m1thrandir225/go-vs-gocuda/util"
 
 	"github.com/m1thrandir225/go-vs-gocuda/internals/native"
 )
@@ -16,7 +17,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	verificationNative := matrixA.VerifyMultiplication(matrixA, matrixB, resultNative)
+	verificationNative := util.VerifyMatrixMultiplication(matrixA, matrixB, resultNative)
 	fmt.Printf("Verification native multiplication: %t\n", verificationNative)
 
 	resultParallel, err := matrixA.MultiplyParallel(matrixB)
@@ -25,7 +26,7 @@ func main() {
 		return
 	}
 
-	verificationParallel := matrixA.VerifyMultiplication(matrixA, matrixB, resultParallel)
+	verificationParallel := util.VerifyMatrixMultiplication(matrixA, matrixB, resultParallel)
 	fmt.Printf("Verification parallel multiplication: %t\n", verificationParallel)
 
 	resultParallelWorkerPool, err := matrixA.MultiplyParallelWorkerPool(matrixB)
@@ -34,6 +35,6 @@ func main() {
 		return
 	}
 
-	verificationParallelWorkerPool := matrixA.VerifyMultiplication(matrixA, matrixB, resultParallelWorkerPool)
+	verificationParallelWorkerPool := util.VerifyMatrixMultiplication(matrixA, matrixB, resultParallelWorkerPool)
 	fmt.Printf("Verification worker pool multiplication: %t\n", verificationParallelWorkerPool)
 }

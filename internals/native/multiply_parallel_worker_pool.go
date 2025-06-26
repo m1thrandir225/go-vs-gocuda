@@ -2,11 +2,12 @@ package native
 
 import (
 	"fmt"
-	"github.com/m1thrandir225/go-vs-gocuda/util"
 	"log"
 	"runtime"
 	"sync"
 	"time"
+
+	"github.com/m1thrandir225/go-vs-gocuda/util"
 )
 
 func (m *Matrix) MultiplyParallelWorkerPool(b *Matrix) (*Matrix, error) {
@@ -19,9 +20,9 @@ func (m *Matrix) MultiplyParallelWorkerPool(b *Matrix) (*Matrix, error) {
 		return nil, fmt.Errorf("incompattible matrix dimensions for multiplication")
 	}
 
-	result := make([][]float64, len(*m))
+	result := make([][]float32, len(*m))
 	for i := range result {
-		result[i] = make([]float64, len((*b)[0]))
+		result[i] = make([]float32, len((*b)[0]))
 	}
 
 	numWorkers := runtime.NumCPU()
@@ -38,7 +39,7 @@ func (m *Matrix) MultiplyParallelWorkerPool(b *Matrix) (*Matrix, error) {
 			defer wg.Done()
 			for rowIdx := range jobs {
 				for j := range (*b)[0] {
-					sum := 0.0
+					var sum float32 = 0.0
 					for k := range *b {
 						sum += (*m)[rowIdx][k] * (*b)[k][j]
 					}

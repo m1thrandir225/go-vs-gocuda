@@ -1,8 +1,9 @@
 package native
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestMatrix_MultiplyParallelWorkerPool_Working(t *testing.T) {
@@ -34,7 +35,7 @@ func TestMatrix_MultiplyParallelWorkerPool_DifferentSizes(t *testing.T) {
 func TestMatrix_MultiplyParallelWorkerPool_EmptyMatrix(t *testing.T) {
 	size := 4
 	matrixA := NewRandomMatrix(size)
-	matrixBase := make([][]float64, size)
+	matrixBase := make([][]float32, size)
 
 	matrixB := Matrix(matrixBase)
 

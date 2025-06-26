@@ -7,7 +7,7 @@ import (
 	"github.com/m1thrandir225/go-vs-gocuda/util"
 )
 
-type Matrix [][]float64
+type Matrix [][]float32
 
 // Creates a random new matrix
 func NewRandomMatrix(size int) *Matrix {
@@ -56,11 +56,11 @@ func VerifyMatrixMultiplication(a, b, expected *Matrix) bool {
 		return false
 	}
 
-	calculatedResultData := make([][]float64, rowsA)
+	calculatedResultData := make([][]float32, rowsA)
 	for i := range rowsA {
-		calculatedResultData[i] = make([]float64, colsA)
+		calculatedResultData[i] = make([]float32, colsA)
 		for j := range colsB {
-			var sum float64
+			var sum float32
 			for k := range rowsA {
 				sum += (*a)[i][k] * (*b)[k][j]
 			}
@@ -72,7 +72,7 @@ func VerifyMatrixMultiplication(a, b, expected *Matrix) bool {
 
 	for i := range rowsA {
 		for j := range colsA {
-			if math.Abs(calculatedMatrix[i][j]-(*expected)[i][j]) > epsilon {
+			if math.Abs(float64(calculatedMatrix[i][j]-(*expected)[i][j])) > epsilon {
 				fmt.Printf("Error: matrix values do not match.")
 				return false
 			}

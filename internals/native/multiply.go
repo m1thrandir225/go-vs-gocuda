@@ -15,9 +15,9 @@ func (m *Matrix) Multiply(b *Matrix) (*Matrix, error) {
 		return nil, fmt.Errorf("incompattible matrix dimensions for multiplication")
 	}
 
-	result := make([][]float64, len(*m))
+	result := make([][]float32, len(*m))
 	for i := range result {
-		result[i] = make([]float64, len((*b)[0]))
+		result[i] = make([]float32, len((*b)[0]))
 	}
 
 	var wg sync.WaitGroup

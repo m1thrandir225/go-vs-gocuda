@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	matrixSize := 512
+	matrixSize := 2048
 	matrixA := native.NewRandomMatrix(matrixSize)
 	matrixB := native.NewRandomMatrix(matrixSize)
 

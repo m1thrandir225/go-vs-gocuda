@@ -25,6 +25,7 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+
 	matrixA := native.Matrix(a)
 	matrixB := native.Matrix(b)
 	matrixC := native.Matrix(c)
@@ -37,4 +38,20 @@ func main() {
 	}
 	fmt.Println("Verification: True")
 
+	c_tiled, err := cuda.MultiplyTiled(a, b)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return
+	}
+
+	matrixC_tiled := native.Matrix(c_tiled)
+
+	verify_tiled := native.VerifyMatrixMultiplication(&matrixA, &matrixB, &matrixC_tiled)
+
+	if !verify_tiled {
+		fmt.Println("Error: Tiled Matrix Multiplication Verification Failed")
+		return
+	}
+
+	fmt.Println("Tiled Matrix Mult. Verifiaction: True")
 }

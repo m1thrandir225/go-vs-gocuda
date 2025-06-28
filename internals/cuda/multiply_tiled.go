@@ -17,7 +17,7 @@ void tiled_matrix_multiplication_wrapper(float* a, float* b, float* c, int size)
 import "C"
 
 func MultiplyTiled(a, b [][]float32) ([][]float32, error) {
-	defer util.TimeTrack(time.Now(), "Total Time Multiply Tiled CUDA")
+	defer util.TimeTrack(time.Now(), "Multiply Tiled CUDA")
 
 	size := len(a)
 	if size == 0 || len(a[0]) != size || len(b) != size || len(b[0]) != size {
@@ -39,7 +39,7 @@ func MultiplyTiled(a, b [][]float32) ([][]float32, error) {
 
 	elapsed := time.Since(beforeCCall)
 
-	log.Printf("Go-C CUDA Call Took: %s\n", elapsed)
+	log.Printf("Multiply Tiled Go-C Call Took: %s\n", elapsed)
 
 	result := unflatten(flatC, size)
 

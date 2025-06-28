@@ -102,23 +102,28 @@ extern "C" {
         float *d_a = NULL, *d_b = NULL, *d_c = NULL;
         int size_bytes = total * sizeof(float);
 
+        //Allocate GPU memory
         cudaMalloc((void**)&d_a, size_bytes);
         cudaMalloc((void**)&d_b, size_bytes);
         cudaMalloc((void**)&d_c, size_bytes);
 
+        // Copy data from Host to device
         cudaMemcpy(d_a, a, size_bytes, cudaMemcpyHostToDevice);
         cudaMemcpy(d_b, b, size_bytes, cudaMemcpyHostToDevice);
 
+        // Define grid and block dimensions
         int grid_dim_x = (size + TILE_SIZE - 1) / TILE_SIZE;
         int grid_dim_y = (size + TILE_SIZE - 1) / TILE_SIZE;
-
         dim3 gridDim(grid_dim_x, grid_dim_y);
         dim3 blockDim(TILE_SIZE, TILE_SIZE);
 
+        //Launch kernel
         tiled_matrix_mul<<<gridDim, blockDim>>>(d_a, d_b, d_c, size);
 
+        //Copy result back from device to host
         cudaMemcpy(c, d_c, size_bytes, cudaMemcpyDeviceToHost);
 
+        //Free memory
         cudaFree(d_a);
         cudaFree(d_b);
         cudaFree(d_c);

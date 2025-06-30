@@ -28,7 +28,9 @@ SIZE ?= 512
 
 all: build
 
-build: $(NATIVE_BIN) $(CUDA_BIN)
+build: build-native build-cuda
+build-native: $(NATIVE_BIN)
+build-cuda: $(CUDA_BIN)
 
 $(DIST_DIR):
 	@echo "Creating distribution directory..."

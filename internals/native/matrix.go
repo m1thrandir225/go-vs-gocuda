@@ -74,9 +74,8 @@ func VerifyMatrixMultiplication(a, b, expected *Matrix) bool {
 	return true
 }
 
+// Faster Verification Algorithm
 func VerifyMatrixMultiplicationFreivalds(a, b, expected *Matrix, iterations int) bool {
-	// Define a relative tolerance. 1e-12 is a good starting point for float64,
-	// it means we expect the first 12 or so significant digits to match.
 	relativeTolerance := 1e-12
 
 	if a == nil || b == nil || expected == nil {

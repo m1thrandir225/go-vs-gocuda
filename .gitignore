@@ -70,6 +70,7 @@ go.work.sum
 # *.iml
 # *.ipr
 
+.dist/
 # CMake
 cmake-build-*/
 

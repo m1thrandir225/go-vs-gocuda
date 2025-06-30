@@ -35,7 +35,7 @@ func TestMatrix_MultiplyParallelWorkerPool_DifferentSizes(t *testing.T) {
 func TestMatrix_MultiplyParallelWorkerPool_EmptyMatrix(t *testing.T) {
 	size := 4
 	matrixA := NewRandomMatrix(size)
-	matrixBase := make([][]float32, size)
+	matrixBase := make([][]float64, size)
 
 	matrixB := Matrix(matrixBase)
 

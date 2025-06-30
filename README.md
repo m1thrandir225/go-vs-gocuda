@@ -23,7 +23,7 @@ Requirements: Go 1.24+
 
 Run or compile the native package.
 
-You can use the `Makefile` for this. (Windows, Mac & Linux).
+You can use the `Makefile` for this. (Windows).
 
 ## Performance Benchmarks
 
@@ -31,26 +31,21 @@ For my performance analysis I did test it on 3 machines.
 
 1. RTX 3070 + Ryzen 7 3700x
 2. Macbook M2 MAX (CPU Only Comparison)
-3. ...
 
-The CPU Mode has 3 different benchmarks on it i.e making it faster.
+### RTX 3070 + Ryzen 7 3700x
 
-The simplest one is just a for loop of matrix multiplication.
+| Size      | CPU-Basic      | CPU-Parallel | CPU-Parallel-Worker-Pool | GPU-Basic              | GPU-Tiled             |
+| --------- | -------------- | ------------ | ------------------------ | ---------------------- | --------------------- |
+| 512x512   | 457.8794ms     | 39.4346ms    | 38.1983ms                | 75.9094ms(73.1074ms)   | 4.0501ms(3.0408ms)    |
+| 1024x1024 | 3.7636204s     | 360.9949ms   | 358.5513ms               | 83.2571ms(79.5978ms)   | 15.553ms(11.6207ms)   |
+| 2048x2048 | 40.3201839s    | 4.6126668s   | 4.6643551s               | 152.9811ms(140.8297ms) | 85.9288ms(74.6713ms)  |
+| 4096x4096 | 14m58.8036904s | 2m6.8188304s | 2m31.7133689s            | 585.6444ms(540.149ms)  | 494.473ms(448.6114ms) |
 
-The `Parallel` mode is spawing Go-routes and using a `sync.WaitGroup` simillar to how we would do it in CUDA.
+### Macbook M2 MAX
 
-The third mode called - `Worker Pool` makes jobs as much CPU threads we have available on our system, so we can maximize performance and don't have any performance loss.
-
-### RTX 3070 vs Ryzen 7 3700x
-
-**CPU**
-
-```bash
-Native Basic - 493.4545ms (Verification: True)
-Native Parallel Mode - 38.6415ms  (Verification: True)
-Native Parallel Worker Pool - 37.6499ms (Verification: True)
-```
-
-In most of my tests the difference between Parallel Mode and Parallel Worker Mode ~ 2% difference in benefit of the most optimized version i.e the Paralell Worker Mode. But the difference between the Parallel modes and the Basic mode is about a 92% performance gain.
-
-**GPU**
+| Size      | CPU-Basic      | CPU-Parallel | CPU-Parallel-Worker-Pool | GPU-Basic | GPU-Tiled |
+| --------- | -------------- | ------------ | ------------------------ | --------- | --------- |
+| 512x512   | 457.8794ms     | 39.4346ms    | 38.1983ms                | /         | /         |
+| 1024x1024 | 3.7636204s     | 360.9949ms   | 358.5513ms               | /         | /         |
+| 2048x2048 | 40.3201839s    | 4.6126668s   | 4.6643551s               | /         | /         |
+| 4096x4096 | 14m58.8036904s | 2m6.8188304s | 2m31.7133689s            | /         | /         |

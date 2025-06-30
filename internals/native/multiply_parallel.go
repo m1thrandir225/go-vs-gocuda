@@ -17,9 +17,9 @@ func (m *Matrix) MultiplyParallel(b *Matrix) (*Matrix, error) {
 		return nil, fmt.Errorf("incompattible matrix dimensions for multiplication")
 	}
 
-	result := make([][]float32, len(*m))
+	result := make([][]float64, len(*m))
 	for i := range result {
-		result[i] = make([]float32, len((*b)[0]))
+		result[i] = make([]float64, len((*b)[0]))
 	}
 
 	var wg sync.WaitGroup
@@ -29,7 +29,7 @@ func (m *Matrix) MultiplyParallel(b *Matrix) (*Matrix, error) {
 		go func(rowIdx int) {
 			defer wg.Done()
 			for j := range (*b)[0] {
-				sum := float32(0.0)
+				sum := float64(0.0)
 				for k := range *b {
 					sum += (*m)[rowIdx][k] * (*b)[k][j]
 				}

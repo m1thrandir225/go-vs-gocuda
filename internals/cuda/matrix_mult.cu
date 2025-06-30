@@ -6,13 +6,13 @@
 #include <math.h>
 #include <cuda_runtime_api.h>
 
-__global__ void matrix_multiplication(float *a, float *b, float *c, int width)
+__global__ void matrix_multiplication(double *a, double *b, double *c, int width)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (row < width && col < width) {
-        float sum = 0.0f;
+        double sum = 0.0f;
         for (int k = 0; k < width; ++k) {
 			sum += a[row * width + k] * b[k * width + col];
         }
@@ -20,10 +20,10 @@ __global__ void matrix_multiplication(float *a, float *b, float *c, int width)
     }
 }
 
-__global__ void tiled_matrix_mul(float *a, float *b, float *c, int width) {
+__global__ void tiled_matrix_mul(double *a, double *b, double *c, int width) {
     const int TILE_SIZE = 16;
-   __shared__ float sA[TILE_SIZE][TILE_SIZE];
-   __shared__ float sB[TILE_SIZE][TILE_SIZE];
+   __shared__ double sA[TILE_SIZE][TILE_SIZE];
+   __shared__ double sB[TILE_SIZE][TILE_SIZE];
 
 
    int bx = blockIdx.x;
@@ -34,7 +34,7 @@ __global__ void tiled_matrix_mul(float *a, float *b, float *c, int width) {
    int row = by * TILE_SIZE + ty;
    int col = bx * TILE_SIZE + tx;
 
-   float c_value = 0.0f;
+   double c_value = 0.0f;
 
       for (int t = 0; t < (width + TILE_SIZE - 1) / TILE_SIZE; ++t) {
         if (row < width && (t * TILE_SIZE + tx) < width) {
@@ -64,11 +64,11 @@ __global__ void tiled_matrix_mul(float *a, float *b, float *c, int width) {
 
 
 extern "C" {
-    __declspec(dllexport) void matrix_multiplication_wrapper(float *a, float *b, float *c, int size) {
+    __declspec(dllexport) void matrix_multiplication_wrapper(double *a, double *b, double *c, int size) {
 		int total = size * size;
 
-        float* d_a = NULL, * d_b = NULL, * d_c = NULL;
-        int size_bytes = total * sizeof(float);
+        double* d_a = NULL, * d_b = NULL, * d_c = NULL;
+        int size_bytes = total * sizeof(double);
 
         // Allocate memory on the GPU
         cudaMalloc((void**)&d_a, size_bytes);
@@ -95,12 +95,12 @@ extern "C" {
         cudaFree(d_c);
     }
 
-    __declspec(dllexport) void tiled_matrix_multiplication_wrapper(float *a, float *b, float *c, int size) {
+    __declspec(dllexport) void tiled_matrix_multiplication_wrapper(double *a, double *b, double *c, int size) {
         int total = size * size;
         const int TILE_SIZE = 16;
 
-        float *d_a = NULL, *d_b = NULL, *d_c = NULL;
-        int size_bytes = total * sizeof(float);
+        double *d_a = NULL, *d_b = NULL, *d_c = NULL;
+        int size_bytes = total * sizeof(double);
 
         //Allocate GPU memory
         cudaMalloc((void**)&d_a, size_bytes);

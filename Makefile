@@ -21,6 +21,8 @@ CUDA_LIB_SRC_PATH=$(CUDA_SRC_DIR)/$(CUDA_LIB_NAME)
 NATIVE_BIN=$(DIST_DIR)/native_benchmark.exe
 CUDA_BIN=$(DIST_DIR)/cuda_benchmark.exe
 
+SIZE ?= 512
+
 # --- Build & Run Targets ---
 .PHONY: all build run run-native run-cuda clean
 
@@ -50,12 +52,12 @@ run: run-native run-cuda
 
 run-native: $(NATIVE_BIN)
 	@echo "--- Running Native Benchmark ---"
-	./$(NATIVE_BIN)
+	./$(NATIVE_BIN) -size=$(SIZE)
 	@echo "--------------------------------"
 
 run-cuda: $(CUDA_BIN)
 	@echo "--- Running CUDA Benchmark ---"
-	./$(CUDA_BIN)
+	./$(CUDA_BIN) -size=$(SIZE)
 	@echo "------------------------------"
 
 

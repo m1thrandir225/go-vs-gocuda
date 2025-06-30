@@ -36,7 +36,7 @@ func TestMatrix_MultiplyParallel_DifferentSizes(t *testing.T) {
 func TestMatrix_MultiplyParallel_EmptyMatrix(t *testing.T) {
 	size := 2
 	matrixA := NewRandomMatrix(size)
-	matrixBase := make([][]float32, size)
+	matrixBase := make([][]float64, size)
 	matrixB := Matrix(matrixBase)
 
 	result, err := matrixA.MultiplyParallel(&matrixB)

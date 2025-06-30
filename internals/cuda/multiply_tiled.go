@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"unsafe"
 
 	"github.com/m1thrandir225/go-vs-gocuda/util"
 )
@@ -12,11 +13,11 @@ import (
 #cgo CFLAGS: -I${SRCDIR}
 #cgo LDFLAGS: -L${SRCDIR} -L "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.9/lib/x64" -lmatrixmult -lcudart
 #include "matrix_mult.h"
-void tiled_matrix_multiplication_wrapper(float* a, float* b, float* c, int size);
+void tiled_matrix_multiplication_wrapper(double  *a, double *b, double *c, int size);
 */
 import "C"
 
-func MultiplyTiled(a, b [][]float32) ([][]float32, error) {
+func MultiplyTiled(a, b [][]float64) ([][]float64, error) {
 	defer util.TimeTrack(time.Now(), "Multiply Tiled CUDA")
 
 	size := len(a)
@@ -26,14 +27,14 @@ func MultiplyTiled(a, b [][]float32) ([][]float32, error) {
 
 	flatA := flatten(a)
 	flatB := flatten(b)
-	flatC := make([]float32, size*size)
+	flatC := make([]float64, size*size)
 
 	beforeCCall := time.Now()
 
 	C.matrix_multiplication_wrapper(
-		(*C.float)(&flatA[0]),
-		(*C.float)(&flatB[0]),
-		(*C.float)(&flatC[0]),
+		(*C.double)(unsafe.Pointer(&flatA[0])),
+		(*C.double)(unsafe.Pointer(&flatB[0])),
+		(*C.double)(unsafe.Pointer(&flatC[0])),
 		C.int(size),
 	)
 

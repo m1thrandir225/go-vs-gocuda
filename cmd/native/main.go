@@ -20,7 +20,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	verificationNative := native.VerifyMatrixMultiplication(matrixA, matrixB, resultNative)
+	verificationNative := native.VerifyMatrixMultiplicationFreivalds(matrixA, matrixB, resultNative, 20)
 	log.Printf("Verification native multiplication: %t\n", verificationNative)
 
 	resultParallel, err := matrixA.MultiplyParallel(matrixB)
@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	verificationParallel := native.VerifyMatrixMultiplication(matrixA, matrixB, resultParallel)
+	verificationParallel := native.VerifyMatrixMultiplicationFreivalds(matrixA, matrixB, resultParallel, 20)
 	log.Printf("Verification parallel multiplication: %t\n", verificationParallel)
 
 	resultParallelWorkerPool, err := matrixA.MultiplyParallelWorkerPool(matrixB)
@@ -38,6 +38,6 @@ func main() {
 		return
 	}
 
-	verificationParallelWorkerPool := native.VerifyMatrixMultiplication(matrixA, matrixB, resultParallelWorkerPool)
+	verificationParallelWorkerPool := native.VerifyMatrixMultiplicationFreivalds(matrixA, matrixB, resultParallelWorkerPool, 20)
 	fmt.Printf("Verification worker pool multiplication: %t\n", verificationParallelWorkerPool)
 }

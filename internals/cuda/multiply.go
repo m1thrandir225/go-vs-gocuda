@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"unsafe"
 
 	"github.com/m1thrandir225/go-vs-gocuda/util"
 )
@@ -11,11 +12,12 @@ import (
 /*
 #cgo CFLAGS: -I${SRCDIR}
 #cgo LDFLAGS: -L${SRCDIR} -L "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.9/lib/x64" -lmatrixmult -lcudart
-void matrix_multiplication_wrapper(float* a, float* b, float* c, int size);
+#include "matrix_mult.h"
+void matrix_multiplication_wrapper(double *a, double *b, double *c, int size);
 */
 import "C"
 
-func Multiply(a, b [][]float32) ([][]float32, error) {
+func Multiply(a, b [][]float64) ([][]float64, error) {
 	defer util.TimeTrack(time.Now(), "Multiply CUDA")
 	size := len(a)
 	if size == 0 || len(a[0]) != size || len(b) != size || len(b[0]) != size {
@@ -24,14 +26,14 @@ func Multiply(a, b [][]float32) ([][]float32, error) {
 
 	flatA := flatten(a)
 	flatB := flatten(b)
-	flatC := make([]float32, size*size)
+	flatC := make([]float64, size*size)
 
 	beforeCCall := time.Now()
 
 	C.matrix_multiplication_wrapper(
-		(*C.float)(&flatA[0]),
-		(*C.float)(&flatB[0]),
-		(*C.float)(&flatC[0]),
+		(*C.double)(unsafe.Pointer(&flatA[0])),
+		(*C.double)(unsafe.Pointer(&flatB[0])),
+		(*C.double)(unsafe.Pointer(&flatC[0])),
 		C.int(size),
 	)
 
@@ -43,24 +45,24 @@ func Multiply(a, b [][]float32) ([][]float32, error) {
 	return result, nil
 }
 
-func flatten(matrix [][]float32) []float32 {
+func flatten(matrix [][]float64) []float64 {
 	size := len(matrix)
-	flat := make([]float32, 0, size*size)
+	flat := make([]float64, 0, size*size)
 	for _, row := range matrix {
 		flat = append(flat, row...)
 	}
 	return flat
 }
 
-func unflatten(flat []float32, size int) [][]float32 {
-	matrix := make([][]float32, size)
+func unflatten(flat []float64, size int) [][]float64 {
+	matrix := make([][]float64, size)
 	for i := 0; i < size; i++ {
 		matrix[i] = flat[i*size : (i+1)*size]
 	}
 	return matrix
 }
 
-func PrintMatrix(matrix [][]float32) {
+func PrintMatrix(matrix [][]float64) {
 	for _, row := range matrix {
 		for _, val := range row {
 			fmt.Printf("%8.2f", val)
